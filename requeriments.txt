@@ -1,3 +1,6 @@
 django
 psycopg2
 python-dotenv
+djangorestframework
+cryptography
+django-cors-headers
