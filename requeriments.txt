@@ -4,3 +4,4 @@ python-dotenv
 djangorestframework
 cryptography
 django-cors-headers
+cloudinary
