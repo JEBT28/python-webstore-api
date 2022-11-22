@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'corsheaders',
     #Apps locales
     'users',
-    'productos'
+    'productos',
+    'carts'
 ]
 
 
