@@ -1,7 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.contrib.auth.models import User
 
 from cloudinary.uploader import upload, destroy
 
@@ -41,6 +40,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def nuevo(self, request):
+        permisions = [IsAuthenticated]
         b64_img = request.data['img'] or None
         
         if b64_img:
@@ -58,6 +58,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['put'], url_path='editar/(?P<pk>[^/.]+)')
     def editar(self, request, pk):
+        permisions = [IsAuthenticated]
         instance = self.get_queryset().get(id=pk)
         if not instance:
             return Response({'detail':'No existe el producto'},status=status.http_404_NOT_FOUND)
@@ -73,6 +74,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['delete'], url_path='eliminar/(?P<pk>[^/.]+)')
     def eliminar(self, request, pk):
+        permisions = [IsAuthenticated]
         instance = self.get_queryset().get(id=pk)
         img_url = instance.img_url
         if not instance:
