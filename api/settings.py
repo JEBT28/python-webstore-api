@@ -15,7 +15,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 import cloudinary
-import corsheaders
+from urllib.parse import urlparse
 
 load_dotenv()
 
@@ -113,14 +113,16 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-#Postgres
+#Postgres- use database_url 
+db = urlparse(os.environ['DATABASE_URL'])
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config['DB_NAME'],
-        'USER': config['DB_USER'],
-        'PASSWORD': config['DB_PASSWORD'],
-        'HOST': config['DB_HOST'],
+        'NAME': db.path.strip('/'),
+        'USER': db.username,
+        'PASSWORD': db.password,
+        'HOST': db.hostname,
+        'PORT': db.port,
     }
 }
 
