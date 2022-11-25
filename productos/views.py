@@ -19,6 +19,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         products = ProductModelSerializer(self.get_queryset(), many=True).data
         
+        if not products:
+            return Response({'detail':'No hay productos'}, status=status.HTTP_404_NOT_FOUND)
+        
         res = {
             'results': products
         }

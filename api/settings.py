@@ -29,8 +29,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = False
 
 config = os.environ
-print(dict(config))
-
 
 ALLOWED_HOSTS = [
     "localhost",
