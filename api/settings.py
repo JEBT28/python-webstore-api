@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-config = dotenv.dotenv_values( "local.env" if DEBUG else".env")
+config = os.environ
 
 
 ALLOWED_HOSTS = [
