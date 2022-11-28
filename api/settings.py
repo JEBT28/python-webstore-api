@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     #Apps locales
     'users',
     'productos',
-    'carts'
+    'carts',
+    'orders',
 ]
 
 
