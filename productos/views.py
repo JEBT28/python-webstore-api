@@ -16,7 +16,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def todos(self,request):
-        
+        permissions = [AllowAny]
         products = ProductModelSerializer(self.get_queryset(), many=True).data
         
         if not products:
