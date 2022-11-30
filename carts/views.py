@@ -41,6 +41,8 @@ class CartViewSet(viewsets.ModelViewSet):
             return Response({'detail':'No existe el usuario'},status=status.HTTP_404_NOT_FOUND)
         product = Producto.objects.get(id=request.data['id_product'])
         cost = product.price * request.data['quantity']
+        product.stock -= request.data['quantity']
+        product.save()
         newItem = {
             'id_user': id_user,
             'id_product': request.data['id_product'],
@@ -60,6 +62,9 @@ class CartViewSet(viewsets.ModelViewSet):
         instance = self.get_queryset().get(id=pk)
         instance.quantity += 1
         instance.cost = instance.quantity * instance.id_product.price
+        product = Producto.objects.get(id=instance.id_product.id)
+        product.stock -= 1
+        product.save()
         serializer = CartUpdateSerializer(instance,data=CartModelSerializer(instance).data)
         serializer.is_valid(raise_exception=True)
         item = serializer.update(instance,CartModelSerializer(instance).data)
@@ -73,6 +78,9 @@ class CartViewSet(viewsets.ModelViewSet):
         instance = self.get_queryset().get(id=pk)
         instance.quantity -= 1
         instance.cost = instance.quantity * instance.id_product.price
+        product = Producto.objects.get(id=instance.id_product.id)
+        product.stock += 1
+        product.save()
         serializer = CartUpdateSerializer(instance,data=CartModelSerializer(instance).data)
         serializer.is_valid(raise_exception=True)
         item = serializer.update(instance,CartModelSerializer(instance).data)

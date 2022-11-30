@@ -21,6 +21,7 @@ class OrderModelSerializer(serializers.ModelSerializer):
             'user',
             'total',
             'direction',
+            'date',
             'orderDetails'
         )
     orderDetails = OrderDetailModelSerializer(many=True)
