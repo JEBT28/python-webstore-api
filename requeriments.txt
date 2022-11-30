@@ -5,3 +5,4 @@ djangorestframework
 cryptography
 django-cors-headers
 cloudinary
+weasyprint
