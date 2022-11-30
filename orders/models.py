@@ -8,6 +8,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     direction = models.CharField(max_length=100)
     total = models.FloatField()
+    date = models.DateTimeField(auto_now_add=True)
     
 class orderDetail(models.Model):
     product = models.ForeignKey(Producto, on_delete=models.CASCADE)
