@@ -1,3 +1,5 @@
+import base64
+import datetime
 from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -8,6 +10,8 @@ from django.contrib.auth.models import User
 from orders.serializers import OrderModelSerializer, OrderRegisterSerializer, OrderDeleteSerializer
 from .models import Order,orderDetail
 from django.db.models import Sum
+from django.template.loader import render_to_string
+from weasyprint import HTML
 # Create your views here.
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -35,7 +39,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         if len(itemsInCart) == 0:
             return Response({'detail': 'No hay productos en el carrito'}, status=status.HTTP_200_OK)
         total = itemsInCart.aggregate(Sum('cost'))['cost__sum']
-        print(total)
+        total = float("{:.2f}".format(total))
         order = {
             "user": User.objects.get(id=request.user.id).id,
             "total": total,
@@ -47,7 +51,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         order = serializer.save()
         
         for item in itemsInCart:
-            od = orderDetail.objects.create(order=order, product=item.id_product, quantity=item.quantity, cost=item.cost)
+            cost = float("{:.2f}".format(item.cost))
+            od = orderDetail.objects.create(order=order, product=item.id_product, quantity=item.quantity, cost=cost)
             od.save()
         res = {
             'order': OrderModelSerializer(order).data
@@ -65,3 +70,15 @@ class OrderViewSet(viewsets.ModelViewSet):
             'detail': 'Orden eliminada'
         }
         return Response(res, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'], url_path='pdf/(?P<pk>[^/.]+)')
+    def getOrderPDF(self, request, pk):
+        order = self.get_queryset().get(id=pk)
+        if not order:
+            return Response({'detail': 'No existe la orden'}, status=status.HTTP_404_NOT_FOUND)
+
+        order.date  = datetime.date.today()
+        html_string = render_to_string('order.html', {'order': order,'orderDetails':order.orderDetails.all()})
+        pdf = HTML(string=html_string).write_pdf()
+        pdfenconded = base64.b64encode(pdf)
+        return Response(pdfenconded, status=status.HTTP_200_OK)
