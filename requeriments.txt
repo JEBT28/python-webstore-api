@@ -6,3 +6,4 @@ cryptography
 django-cors-headers
 cloudinary
 weasyprint
+django-truncate
