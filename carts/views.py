@@ -92,6 +92,9 @@ class CartViewSet(viewsets.ModelViewSet):
     @action(methods=['delete'], detail=False, url_path='deleteItem/(?P<pk>[^/.]+)')
     def deleteItem(self, request, pk):
         instance = self.get_queryset().get(id=pk)
+        product = Producto.objects.get(id=instance.id_product.id)
+        product.stock += instance.quantity
+        product.save()
         serializer = CartDeleteSerializer(instance=instance,data = CartModelSerializer(instance).data)
         serializer.is_valid(raise_exception=True)
         item = serializer.delete(instance)
@@ -107,6 +110,10 @@ class CartViewSet(viewsets.ModelViewSet):
         if not id_user:
             return Response({'detail':'No existe el usuario'},status=status.HTTP_404_NOT_FOUND)
         cart = Cart.objects.filter(id_user=id_user)
+        for item in cart:
+            product = Producto.objects.get(id=item.id_product.id)
+            product.stock += item.quantity
+            product.save() 
         cart.delete()
         res = {
             'detail': 'Carrito vaciado'
